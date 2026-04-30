@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="85" failures="0" errors="0" time="64.404">
+  <testsuite name="TelemetryService" errors="0" failures="0" skipped="0" timestamp="2025-10-01T11:54:42" time="32.274" tests="21">
+    <testcase classname="TelemetryService should be created" name="TelemetryService should be created" time="0.254">
+    </testcase>
+    <testcase classname="TelemetryService should initialize telemetry" name="TelemetryService should initialize telemetry" time="0.079">
+    </testcase>
+    <testcase classname="TelemetryService should skip initialization if already initialized" name="TelemetryService should skip initialization if already initialized" time="0.064">
+    </testcase>
+    <testcase classname="TelemetryService should skip initialization if OpenTelemetry is disabled" name="TelemetryService should skip initialization if OpenTelemetry is disabled" time="0.01">
+    </testcase>
+    <testcase classname="TelemetryService should handle errors during initialization" name="TelemetryService should handle errors during initialization" time="0.067">
+    </testcase>
+    <testcase classname="TelemetryService should start a span when initialized" name="TelemetryService should start a span when initialized" time="0.007">
+    </testcase>
+    <testcase classname="TelemetryService should return null when starting a span if not initialized" name="TelemetryService should return null when starting a span if not initialized" time="0.054">
+    </testcase>
+    <testcase classname="TelemetryService should handle errors when starting a span" name="TelemetryService should handle errors when starting a span" time="0.008">
+    </testcase>
+    <testcase classname="TelemetryService should set attributes on current span" name="TelemetryService should set attributes on current span" time="0.047">
+    </testcase>
+    <testcase classname="TelemetryService should not set attributes if not initialized" name="TelemetryService should not set attributes if not initialized" time="0.008">
+    </testcase>
+    <testcase classname="TelemetryService should handle errors when setting attributes" name="TelemetryService should handle errors when setting attributes" time="0.026">
+    </testcase>
+    <testcase classname="TelemetryService should add event to current span" name="TelemetryService should add event to current span" time="0.012">
+    </testcase>
+    <testcase classname="TelemetryService should not add event if not initialized" name="TelemetryService should not add event if not initialized" time="0.05">
+    </testcase>
+    <testcase classname="TelemetryService should handle errors when adding event" name="TelemetryService should handle errors when adding event" time="0.006">
+    </testcase>
+    <testcase classname="TelemetryService should end span" name="TelemetryService should end span" time="0.073">
+    </testcase>
+    <testcase classname="TelemetryService should not end span if not initialized" name="TelemetryService should not end span if not initialized" time="0.032">
+    </testcase>
+    <testcase classname="TelemetryService should not end span if spanContext is null" name="TelemetryService should not end span if spanContext is null" time="0.006">
+    </testcase>
+    <testcase classname="TelemetryService should handle errors when ending span" name="TelemetryService should handle errors when ending span" time="0.006">
+    </testcase>
+    <testcase classname="TelemetryService should end span with error status" name="TelemetryService should end span with error status" time="0.086">
+    </testcase>
+    <testcase classname="TelemetryService should set span status to OK when ending with success" name="TelemetryService should set span status to OK when ending with success" time="0.101">
+    </testcase>
+    <testcase classname="TelemetryService should handle missing span when ending span" name="TelemetryService should handle missing span when ending span" time="0.049">
+    </testcase>
+  </testsuite>
+  <testsuite name="TelemetryInterceptor" errors="0" failures="0" skipped="0" timestamp="2025-10-01T11:55:15" time="2.272" tests="2">
+    <testcase classname="TelemetryInterceptor should be created" name="TelemetryInterceptor should be created" time="0.093">
+    </testcase>
+    <testcase classname="TelemetryInterceptor should have UUID generation capability" name="TelemetryInterceptor should have UUID generation capability" time="0.039">
+    </testcase>
+  </testsuite>
+  <testsuite name="ReviewFormComponent" errors="0" failures="0" skipped="0" timestamp="2025-10-01T11:55:17" time="5.054" tests="8">
+    <testcase classname="ReviewFormComponent should create" name="ReviewFormComponent should create" time="1.568">
+    </testcase>
+    <testcase classname="ReviewFormComponent should initialize form with empty values" name="ReviewFormComponent should initialize form with empty values" time="0.204">
+    </testcase>
+    <testcase classname="ReviewFormComponent should mark form as invalid when empty" name="ReviewFormComponent should mark form as invalid when empty" time="0.087">
+    </testcase>
+    <testcase classname="ReviewFormComponent should mark form as valid when all required fields are filled" name="ReviewFormComponent should mark form as valid when all required fields are filled" time="0.081">
+    </testcase>
+    <testcase classname="ReviewFormComponent should set rating when star is clicked" name="ReviewFormComponent should set rating when star is clicked" time="0.097">
+    </testcase>
+    <testcase classname="ReviewFormComponent should submit form and emit event on success" name="ReviewFormComponent should submit form and emit event on success" time="0.208">
+    </testcase>
+    <testcase classname="ReviewFormComponent should handle error when submitting review fails" name="ReviewFormComponent should handle error when submitting review fails" time="0.119">
+    </testcase>
+    <testcase classname="ReviewFormComponent should reset form after successful submission" name="ReviewFormComponent should reset form after successful submission" time="0.109">
+    </testcase>
+  </testsuite>
+  <testsuite name="MovieListComponent" errors="0" failures="0" skipped="0" timestamp="2025-10-01T11:55:23" time="3.012" tests="5">
+    <testcase classname="MovieListComponent should create" name="MovieListComponent should create" time="0.466">
+    </testcase>
+    <testcase classname="MovieListComponent should load movies on init" name="MovieListComponent should load movies on init" time="0.058">
+    </testcase>
+    <testcase classname="MovieListComponent should handle error when loading movies fails" name="MovieListComponent should handle error when loading movies fails" time="0.124">
+    </testcase>
+    <testcase classname="MovieListComponent should retry loading movies" name="MovieListComponent should retry loading movies" time="0.021">
+    </testcase>
+    <testcase classname="MovieListComponent should use telemetry service when loading movies" name="MovieListComponent should use telemetry service when loading movies" time="0.012">
+    </testcase>
+  </testsuite>
+  <testsuite name="App Initialization" errors="0" failures="0" skipped="0" timestamp="2025-10-01T11:55:26" time="1.499" tests="3">
+    <testcase classname="App Initialization should initialize telemetry service" name="App Initialization should initialize telemetry service" time="0.014">
+    </testcase>
+    <testcase classname="App Initialization should handle errors during initialization" name="App Initialization should handle errors during initialization" time="0.008">
+    </testcase>
+    <testcase classname="App Initialization should resolve the promise even if telemetry initialization fails" name="App Initialization should resolve the promise even if telemetry initialization fails" time="0.069">
+    </testcase>
+  </testsuite>
+  <testsuite name="FooterComponent" errors="0" failures="0" skipped="0" timestamp="2025-10-01T11:55:27" time="1.253" tests="3">
+    <testcase classname="FooterComponent should create" name="FooterComponent should create" time="0.116">
+    </testcase>
+    <testcase classname="FooterComponent should display the current year in the copyright notice" name="FooterComponent should display the current year in the copyright notice" time="0.013">
+    </testcase>
+    <testcase classname="FooterComponent should display the Angular version" name="FooterComponent should display the Angular version" time="0.028">
+    </testcase>
+  </testsuite>
+  <testsuite name="MovieDetailComponent" errors="0" failures="0" skipped="0" timestamp="2025-10-01T11:54:42" time="47.761" tests="5">
+    <testcase classname="MovieDetailComponent should create" name="MovieDetailComponent should create" time="0.903">
+    </testcase>
+    <testcase classname="MovieDetailComponent should load movie with reviews on init" name="MovieDetailComponent should load movie with reviews on init" time="0.084">
+    </testcase>
+    <testcase classname="MovieDetailComponent should handle error when loading movie fails" name="MovieDetailComponent should handle error when loading movie fails" time="0.017">
+    </testcase>
+    <testcase classname="MovieDetailComponent should refresh movie data when a review is submitted" name="MovieDetailComponent should refresh movie data when a review is submitted" time="0.051">
+    </testcase>
+    <testcase classname="MovieDetailComponent should format image URLs correctly" name="MovieDetailComponent should format image URLs correctly" time="0.019">
+    </testcase>
+  </testsuite>
+  <testsuite name="App Routes" errors="0" failures="0" skipped="0" timestamp="2025-10-01T11:54:42" time="48.557" tests="9">
+    <testcase classname="App Routes should define routes" name="App Routes should define routes" time="0.018">
+    </testcase>
+    <testcase classname="App Routes should have a default route redirecting to movies" name="App Routes should have a default route redirecting to movies" time="0.003">
+    </testcase>
+    <testcase classname="App Routes should have a movies route" name="App Routes should have a movies route" time="0.002">
+    </testcase>
+    <testcase classname="App Routes should have a movie detail route" name="App Routes should have a movie detail route" time="0.001">
+    </testcase>
+    <testcase classname="App Routes should have a health route" name="App Routes should have a health route" time="0.001">
+    </testcase>
+    <testcase classname="App Routes should have a wildcard route redirecting to movies" name="App Routes should have a wildcard route redirecting to movies" time="0.001">
+    </testcase>
+    <testcase classname="App Routes should load the movie list component" name="App Routes should load the movie list component" time="0.379">
+    </testcase>
+    <testcase classname="App Routes should load the movie detail component" name="App Routes should load the movie detail component" time="3.224">
+    </testcase>
+    <testcase classname="App Routes should load the health component" name="App Routes should load the health component" time="0.02">
+    </testcase>
+  </testsuite>
+  <testsuite name="HeaderComponent" errors="0" failures="0" skipped="0" timestamp="2025-10-01T11:55:29" time="2.477" tests="4">
+    <testcase classname="HeaderComponent should create" name="HeaderComponent should create" time="0.259">
+    </testcase>
+    <testcase classname="HeaderComponent should render the brand name" name="HeaderComponent should render the brand name" time="0.03">
+    </testcase>
+    <testcase classname="HeaderComponent should have a link to the movies page" name="HeaderComponent should have a link to the movies page" time="0.215">
+    </testcase>
+    <testcase classname="HeaderComponent should have the correct navigation structure" name="HeaderComponent should have the correct navigation structure" time="0.149">
+    </testcase>
+  </testsuite>
+  <testsuite name="MovieService" errors="0" failures="0" skipped="0" timestamp="2025-10-01T11:55:31" time="1.747" tests="7">
+    <testcase classname="MovieService should be created" name="MovieService should be created" time="0.046">
+    </testcase>
+    <testcase classname="MovieService should get all movies" name="MovieService should get all movies" time="0.036">
+    </testcase>
+    <testcase classname="MovieService should get movie by ID" name="MovieService should get movie by ID" time="0.005">
+    </testcase>
+    <testcase classname="MovieService should get movie with reviews" name="MovieService should get movie with reviews" time="0.005">
+    </testcase>
+    <testcase classname="MovieService should create a movie" name="MovieService should create a movie" time="0.041">
+    </testcase>
+    <testcase classname="MovieService should update a movie" name="MovieService should update a movie" time="0.005">
+    </testcase>
+    <testcase classname="MovieService should delete a movie" name="MovieService should delete a movie" time="0.005">
+    </testcase>
+  </testsuite>
+  <testsuite name="HealthComponent" errors="0" failures="0" skipped="0" timestamp="2025-10-01T11:55:31" time="2.32" tests="6">
+    <testcase classname="HealthComponent should create" name="HealthComponent should create" time="0.559">
+    </testcase>
+    <testcase classname="HealthComponent should have a currentTime property" name="HealthComponent should have a currentTime property" time="0.057">
+    </testcase>
+    <testcase classname="HealthComponent should display health status information" name="HealthComponent should display health status information" time="0.066">
+    </testcase>
+    <testcase classname="HealthComponent should display version information" name="HealthComponent should display version information" time="0.06">
+    </testcase>
+    <testcase classname="HealthComponent should display status information" name="HealthComponent should display status information" time="0.051">
+    </testcase>
+    <testcase classname="HealthComponent should display timestamp information" name="HealthComponent should display timestamp information" time="0.055">
+    </testcase>
+  </testsuite>
+  <testsuite name="AppComponent" errors="0" failures="0" skipped="0" timestamp="2025-10-01T11:55:30" time="3.06" tests="5">
+    <testcase classname="AppComponent should create the app" name="AppComponent should create the app" time="0.379">
+    </testcase>
+    <testcase classname="AppComponent should render header" name="AppComponent should render header" time="0.064">
+    </testcase>
+    <testcase classname="AppComponent should render router outlet" name="AppComponent should render router outlet" time="0.166">
+    </testcase>
+    <testcase classname="AppComponent should render footer" name="AppComponent should render footer" time="0.065">
+    </testcase>
+    <testcase classname="AppComponent should have the correct structure" name="AppComponent should have the correct structure" time="0.1">
+    </testcase>
+  </testsuite>
+  <testsuite name="ReviewService" errors="0" failures="0" skipped="0" timestamp="2025-10-01T11:55:33" time="0.897" tests="7">
+    <testcase classname="ReviewService should be created" name="ReviewService should be created" time="0.037">
+    </testcase>
+    <testcase classname="ReviewService should get all reviews" name="ReviewService should get all reviews" time="0.006">
+    </testcase>
+    <testcase classname="ReviewService should get review by ID" name="ReviewService should get review by ID" time="0.006">
+    </testcase>
+    <testcase classname="ReviewService should get reviews by movie ID" name="ReviewService should get reviews by movie ID" time="0.006">
+    </testcase>
+    <testcase classname="ReviewService should create a review" name="ReviewService should create a review" time="0.01">
+    </testcase>
+    <testcase classname="ReviewService should update a review" name="ReviewService should update a review" time="0.008">
+    </testcase>
+    <testcase classname="ReviewService should delete a review" name="ReviewService should delete a review" time="0.007">
+    </testcase>
+  </testsuite>
+</testsuites>

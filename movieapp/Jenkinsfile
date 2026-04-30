@@ -1,0 +1,171 @@
+pipeline {
+    agent {
+        docker {
+            image 'node:18-alpine'
+            args '-p 4200:4200'
+        }
+    }
+    
+    environment {
+        HOME = '.'
+        AWS_REGION = 'us-east-1'
+        ECR_REPOSITORY = 'movieapp-frontend'
+        TRIVY_VERSION = '0.38.3'
+    }
+    
+    stages {
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm ci'
+            }
+        }
+        
+        stage('Lint') {
+            steps {
+                sh 'npm run lint'
+            }
+        }
+        
+        stage('Unit Tests') {
+            steps {
+                sh 'npm run test:ci'
+            }
+            post {
+                always {
+                    junit 'test-results/*.xml'
+                }
+            }
+        }
+        
+        stage('Code Coverage') {
+            steps {
+                sh 'npm run test:coverage'
+            }
+            post {
+                success {
+                    publishHTML(target: [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: false,
+                        keepAll: true,
+                        reportDir: 'coverage/movieapp',
+                        reportFiles: 'index.html',
+                        reportName: 'Angular Coverage Report'
+                    ])
+                    
+                    script {
+                        def coverageData = readJSON file: 'coverage/coverage-summary.json'
+                        def coveragePercent = coverageData.total.statements.pct
+                        
+                        if (coveragePercent < 70) {
+                            error "Test coverage is below 70%: ${coveragePercent}%"
+                        } else {
+                            echo "Test coverage is ${coveragePercent}%"
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('SCA - Checkmarx Scan') {
+            steps {
+                echo 'Running Checkmarx scan'
+                // Placeholder for Checkmarx scan
+                // sh 'checkmarx-cli scan -project "MovieApp-Frontend" -source .'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+        
+        stage('Package') {
+            steps {
+                sh 'tar -czf movieapp-frontend.tar.gz -C dist/movieapp .'
+                archiveArtifacts artifacts: 'movieapp-frontend.tar.gz', fingerprint: true
+            }
+        }
+        
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build("${ECR_REPOSITORY}:${env.BUILD_NUMBER}")
+                }
+            }
+        }
+        
+        stage('Vulnerability Scan - Trivy') {
+            steps {
+                sh """
+                    wget https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz
+                    tar -zxvf trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz
+                    ./trivy image --severity HIGH,CRITICAL --exit-code 1 ${ECR_REPOSITORY}:${env.BUILD_NUMBER}
+                """
+            }
+        }
+        
+        stage('Push to ECR') {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'feature-app'
+                }
+            }
+            steps {
+                script {
+                    withAWS(region: "${AWS_REGION}", credentials: 'aws-credentials') {
+                        sh """
+                            aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+                            docker tag ${ECR_REPOSITORY}:${env.BUILD_NUMBER} ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:${env.BUILD_NUMBER}
+                            docker tag ${ECR_REPOSITORY}:${env.BUILD_NUMBER} ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:latest
+                            docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:${env.BUILD_NUMBER}
+                            docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:latest
+                        """
+                    }
+                }
+            }
+        }
+        
+        stage('Update Helm Chart') {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'feature-app'
+                }
+            }
+            steps {
+                script {
+                    def targetEnv = env.BRANCH_NAME == 'main' ? 'qa' : 'dev'
+                    
+                    sh """
+                        sed -i 's|tag:.*|tag: "${env.BUILD_NUMBER}"|g' kubernetes/helm/movieapp-frontend/values-${targetEnv}.yaml
+                        sed -i 's|repository:.*|repository: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}|g' kubernetes/helm/movieapp-frontend/values-${targetEnv}.yaml
+                    """
+                    
+                    withCredentials([sshUserPrivateKey(credentialsId: 'git-credentials', keyFileVariable: 'SSH_KEY')]) {
+                        sh """
+                            git config user.email "jenkins@example.com"
+                            git config user.name "Jenkins"
+                            git add kubernetes/helm/movieapp-frontend/values-${targetEnv}.yaml
+                            git commit -m "Update image tag to ${env.BUILD_NUMBER} for ${targetEnv} environment"
+                            GIT_SSH_COMMAND="ssh -i ${SSH_KEY}" git push origin ${env.BRANCH_NAME}
+                        """
+                    }
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            cleanWs()
+        }
+        success {
+            echo 'Build successful!'
+        }
+        failure {
+            echo 'Build failed!'
+        }
+    }
+}

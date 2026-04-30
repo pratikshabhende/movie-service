@@ -1,0 +1,97 @@
+import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { telemetryInterceptor } from './telemetry.interceptor';
+import { TelemetryService } from '../services/telemetry.service';
+import { NGXLogger } from 'ngx-logger';
+
+describe('TelemetryInterceptor', () => {
+  let httpClient: HttpClient;
+  let httpMock: HttpTestingController;
+  let telemetryServiceSpy: { 
+    startSpan: jest.Mock; 
+    setAttributes: jest.Mock; 
+    addEvent: jest.Mock; 
+    endSpan: jest.Mock;
+  };
+  let loggerSpy: { debug: jest.Mock; info: jest.Mock; error: jest.Mock };
+
+  beforeEach(() => {
+    // Create mock span
+    const spanMock = {
+      setAttribute: jest.fn(),
+      addEvent: jest.fn(),
+      end: jest.fn(),
+      setStatus: jest.fn()
+    };
+    
+    // Create mock services with Jest
+    const telemetrySpy = {
+      startSpan: jest.fn().mockReturnValue(spanMock),
+      setAttributes: jest.fn(),
+      addEvent: jest.fn(),
+      endSpan: jest.fn()
+    };
+    
+    const logSpy = {
+      debug: jest.fn(),
+      info: jest.fn(),
+      error: jest.fn()
+    };
+    
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [
+        { provide: TelemetryService, useValue: telemetrySpy },
+        { provide: NGXLogger, useValue: logSpy },
+        provideHttpClient(withInterceptors([telemetryInterceptor]))
+      ]
+    });
+
+    httpClient = TestBed.inject(HttpClient);
+    httpMock = TestBed.inject(HttpTestingController);
+    telemetryServiceSpy = TestBed.inject(TelemetryService) as any;
+    loggerSpy = TestBed.inject(NGXLogger) as any;
+  });
+
+  afterEach(() => {
+    httpMock.verify();
+  });
+
+  it('should add telemetry headers and create spans for HTTP requests', () => {
+    // Arrange & Act
+    httpClient.get('/api/test').subscribe();
+
+    // Assert - Request phase
+    const req = httpMock.expectOne(r => r.url === '/api/test');
+    expect(telemetryServiceSpy.startSpan).toHaveBeenCalledWith('http_request', expect.any(Object));
+    
+    // Simulate response
+    req.flush({ data: 'test' });
+    
+    // Assert - Response phase
+    expect(telemetryServiceSpy.setAttributes).toHaveBeenCalled();
+    expect(telemetryServiceSpy.endSpan).toHaveBeenCalled();
+    expect(loggerSpy.debug).toHaveBeenCalled();
+  });
+
+  it('should handle HTTP errors and set span error', () => {
+    // Arrange & Act
+    httpClient.get('/api/error').subscribe({
+      next: () => fail('should have failed with 404 error'),
+      error: (error) => expect(error.status).toBe(404)
+    });
+
+    // Assert - Request phase
+    const req = httpMock.expectOne(r => r.url === '/api/error');
+    expect(telemetryServiceSpy.startSpan).toHaveBeenCalled();
+    
+    // Simulate error response
+    req.flush('Not Found', { status: 404, statusText: 'Not Found' });
+    
+    // Assert - Error handling
+    expect(telemetryServiceSpy.setAttributes).toHaveBeenCalled();
+    expect(telemetryServiceSpy.endSpan).toHaveBeenCalled();
+    expect(loggerSpy.error).toHaveBeenCalled();
+  });
+});
