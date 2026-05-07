@@ -72,8 +72,8 @@ jobs:
           name: coverage-${{ matrix.service }}-jacoco
           if-no-files-found: error
           path: |
-            target/site/jacoco/
-            target/site/jacoco/jacoco.xml
+            ${{ matrix.service }}/target/site/jacoco/
+            ${{ matrix.service }}/target/site/jacoco/jacoco.xml
 
       - name: Sonar analysis (Maven)
         if: ${{ env.SONAR_TOKEN != '' && env.SONAR_ORG != '' }}
