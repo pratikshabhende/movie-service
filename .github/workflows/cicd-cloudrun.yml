@@ -35,6 +35,10 @@ env:
   GCP_ARTIFACT_REPO: ${{ secrets.GCP_ARTIFACT_REPO }}
   SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL || 'https://sonarcloud.io' }}
   SONAR_ORG: ${{ secrets.SONAR_ORG }}
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  SONAR_PROJECTKEY_MOVIEWORLD: ${{ secrets.SONAR_PROJECTKEY_MOVIEWORLD }}
+  SONAR_PROJECTKEY_MOVIEREVIEW: ${{ secrets.SONAR_PROJECTKEY_MOVIEREVIEW }}
+  SONAR_PROJECTKEY_MOVIEAPP: ${{ secrets.SONAR_PROJECTKEY_MOVIEAPP }}
 
 jobs:
   backend_test_coverage_sonar:
@@ -72,14 +76,12 @@ jobs:
             target/site/jacoco/jacoco.xml
 
       - name: Sonar analysis (Maven)
-        if: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_ORG != '' }}
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        if: ${{ env.SONAR_TOKEN != '' && env.SONAR_ORG != '' }}
         run: |
           if [ "${{ matrix.service }}" = "movieworld" ]; then
-            SONAR_PROJECT_KEY="${{ secrets.SONAR_PROJECTKEY_MOVIEWORLD }}"
+            SONAR_PROJECT_KEY="${{ env.SONAR_PROJECTKEY_MOVIEWORLD }}"
           else
-            SONAR_PROJECT_KEY="${{ secrets.SONAR_PROJECTKEY_MOVIEREVIEW }}"
+            SONAR_PROJECT_KEY="${{ env.SONAR_PROJECTKEY_MOVIEREVIEW }}"
           fi
 
           if [ -z "$SONAR_PROJECT_KEY" ]; then
@@ -124,16 +126,14 @@ jobs:
             coverage/
 
       - name: Sonar analysis (frontend)
-        if: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_ORG != '' && secrets.SONAR_PROJECTKEY_MOVIEAPP != '' }}
+        if: ${{ env.SONAR_TOKEN != '' && env.SONAR_ORG != '' && env.SONAR_PROJECTKEY_MOVIEAPP != '' }}
         uses: SonarSource/sonarcloud-github-action@v3
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectBaseDir: movieapp
           args: >
             -Dsonar.host.url=${{ env.SONAR_HOST_URL }}
             -Dsonar.organization=${{ env.SONAR_ORG }}
-            -Dsonar.projectKey=${{ secrets.SONAR_PROJECTKEY_MOVIEAPP }}
+            -Dsonar.projectKey=${{ env.SONAR_PROJECTKEY_MOVIEAPP }}
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
 
   build_scan_push_backend:
