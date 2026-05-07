@@ -177,7 +177,7 @@ jobs:
         run: docker build -t "$IMAGE" "${{ matrix.service }}"
 
       - name: Scan docker image (Trivy)
-        uses: aquasecurity/trivy-action@0.30.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_ARTIFACT_REPO }}/${{ matrix.service }}:${{ github.sha }}
           format: table
@@ -266,7 +266,7 @@ jobs:
         run: docker build -t "$IMAGE" movieapp
 
       - name: Scan docker image (Trivy)
-        uses: aquasecurity/trivy-action@0.30.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_ARTIFACT_REPO }}/movieapp:${{ github.sha }}
           format: table
